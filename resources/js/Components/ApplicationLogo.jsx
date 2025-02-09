@@ -13,7 +13,7 @@ export default function ApplicationLogo({
                 className={cn("text-orange-500", size)}
             />
             {isTitle && (
-                <div className="felx flex-col">
+                <div className="flex flex-col">
                     <span className="font-bold leading-none tetx-foreground">
                         Cendikia
                     </span>
