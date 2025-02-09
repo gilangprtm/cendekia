@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 if (!function_exists('flashMessage')) {
     function flashMessage(string $message, string $type = 'success'): void
     {

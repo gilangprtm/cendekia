@@ -53,7 +53,6 @@ export default function Login({ status, canResetPassword }) {
                                         type="email"
                                         name="email"
                                         value={data.email}
-                                        className="mt-1 block w-full"
                                         autoComplete="username"
                                         isFocused={true}
                                         placeholder="Email"
@@ -65,10 +64,7 @@ export default function Login({ status, canResetPassword }) {
                                         }
                                     />
                                     {errors.email && (
-                                        <InputError
-                                            message={errors.email}
-                                            className="mt-2"
-                                        />
+                                        <InputError message={errors.email} />
                                     )}
                                 </div>
 
@@ -92,7 +88,6 @@ export default function Login({ status, canResetPassword }) {
                                         type="password"
                                         name="password"
                                         value={data.password}
-                                        className="mt-1 block w-full"
                                         autoComplete="current-password"
                                         placeholder="Password"
                                         onChange={(e) =>
@@ -103,14 +98,11 @@ export default function Login({ status, canResetPassword }) {
                                         }
                                     />
                                     {errors.password && (
-                                        <InputError
-                                            message={errors.password}
-                                            className="mt-2"
-                                        />
+                                        <InputError message={errors.password} />
                                     )}
                                 </div>
                             </div>
-                            <div className="grid gap-2">
+                            <div className="grid gap-4">
                                 <div className="mt-4 block">
                                     <div className="flex items-center">
                                         <Checkbox
@@ -131,10 +123,7 @@ export default function Login({ status, canResetPassword }) {
                                         </div>
                                     </div>
                                     {errors.remember && (
-                                        <InputError
-                                            message={errors.remember}
-                                            className="mt-2"
-                                        />
+                                        <InputError message={errors.remember} />
                                     )}
                                 </div>
 
