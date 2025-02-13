@@ -17,7 +17,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/Components/ui/sheet";
-import { Toaster } from "@/Components/ui/toaster";
+import { Toaster } from "@/Components/ui/sonner";
 import { Head, Link } from "@inertiajs/react";
 import { IconLayoutSidebar } from "@tabler/icons-react";
 
