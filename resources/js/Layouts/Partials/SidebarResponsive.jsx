@@ -63,7 +63,8 @@ export default function SidebarResponsive({ url = "#", auth }) {
                     Master
                 </div>
                 <NavLinkResponsive
-                    url="#"
+                    url={route("admin.categories.index")}
+                    active={url.startsWith("/admin/categories")}
                     title="Kategori"
                     icon={IconCategory}
                 />
