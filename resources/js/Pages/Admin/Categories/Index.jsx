@@ -10,7 +10,7 @@ import {
     TableCell,
 } from "@/Components/ui/table";
 import AppLayout from "@/Layouts/AppLayout";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import {
     IconCategory,
     IconPencil,
@@ -29,8 +29,26 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
+import { flashMessage } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function Index(props) {
+    const onHandleDelete = (category) => {
+        router.delete(route("admin.categories.destroy", [category]), {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: (success) => {
+                const flash = flashMessage(success);
+                if (flash) {
+                    toast[flash.type](flash.message);
+                }
+            },
+            onError: (error) => {
+                console.error("onError called with error:", error);
+            },
+        });
+    };
+
     return (
         <>
             <div className="flex flex-col w-full pb-32">
@@ -127,7 +145,11 @@ export default function Index(props) {
                                                                 Batal
                                                             </AlertDialogCancel>
                                                             <AlertDialogAction
-                                                                onClick={() => {}}
+                                                                onClick={() =>
+                                                                    onHandleDelete(
+                                                                        category
+                                                                    )
+                                                                }
                                                             >
                                                                 Hapus
                                                             </AlertDialogAction>

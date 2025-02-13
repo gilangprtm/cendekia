@@ -59,4 +59,47 @@ class CategoryController extends Controller
             return back();
         }
     }
+
+    public function edit(Category $category): Response
+    {
+        return inertia('Admin/Categories/Edit', [
+            'category' => $category,
+            'page_settings' => [
+                'title' => 'Edit Kategori',
+                'subtitle' => 'Mengedit kategori yang telah tersedia di platform ini',
+                'method' => 'PUT',
+                'action' => route('admin.categories.update', $category),
+            ]
+        ]);
+    }
+
+    public function update(CategoryRequest $request, Category $category)
+    {
+        try {
+            $category->update([
+                'name' => $name = $request->name,
+                'slug' => $name !== $category->name ? str()->lower(str()->slug($name)) . str()->random(4) : $category->slug,
+                'description' => $request->description,
+                'cover' => $this->upload_file($request, $category, 'cover', 'categories'),
+            ]);
+            flashMessage(MessageType::UPDATE->message('Kategori'));
+            return to_route('admin.categories.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return back();
+        }
+    }
+
+    public function destroy(Category $category)
+    {
+        try {
+            $this->delete_file($category, 'cover');
+            $category->delete();
+            flashMessage(MessageType::DELETED->message('Kategori'));
+            return to_route('admin.categories.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return back();
+        }
+    }
 }
