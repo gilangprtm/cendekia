@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/Components/ui/button";
+import { Link } from "@inertiajs/react";
 
 const Pagination = ({ className, ...props }) => (
     <nav
@@ -29,7 +30,7 @@ const PaginationItem = React.forwardRef(({ className, ...props }, ref) => (
 PaginationItem.displayName = "PaginationItem";
 
 const PaginationLink = ({ className, isActive, size = "icon", ...props }) => (
-    <a
+    <Link
         aria-current={isActive ? "page" : undefined}
         className={cn(
             buttonVariants({
@@ -50,7 +51,7 @@ const PaginationPrevious = ({ className, ...props }) => (
         className={cn("gap-1 pl-2.5", className)}
         {...props}
     >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="w-4 h-4" />
         <span>Previous</span>
     </PaginationLink>
 );
@@ -64,7 +65,7 @@ const PaginationNext = ({ className, ...props }) => (
         {...props}
     >
         <span>Next</span>
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className="w-4 h-4" />
     </PaginationLink>
 );
 PaginationNext.displayName = "PaginationNext";
@@ -75,7 +76,7 @@ const PaginationEllipsis = ({ className, ...props }) => (
         className={cn("flex h-9 w-9 items-center justify-center", className)}
         {...props}
     >
-        <MoreHorizontal className="h-4 w-4" />
+        <MoreHorizontal className="w-4 h-4" />
         <span className="sr-only">More pages</span>
     </span>
 );

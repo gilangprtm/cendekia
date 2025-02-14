@@ -17,9 +17,11 @@ import {
 import AppLayout from "@/Layouts/AppLayout";
 import { Link, router } from "@inertiajs/react";
 import {
+    IconArrowsDownUp,
     IconCategory,
     IconPencil,
     IconPlus,
+    IconRefresh,
     IconTrash,
 } from "@tabler/icons-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
@@ -63,7 +65,14 @@ export default function Index(props) {
         only: ["categories"],
     });
 
-    console.log(meta);
+    const onSortable = (field) => {
+        setParams({
+            ...params,
+            field: field,
+            direction: params.direction === "asc" ? "desc" : "asc",
+        });
+    };
+
     const onHandleDelete = (category) => {
         router.delete(route("admin.categories.destroy", [category]), {
             preserveScroll: true,
@@ -134,17 +143,69 @@ export default function Index(props) {
                                     )}
                                 </SelectContent>
                             </Select>
+                            <Button
+                                variant="red"
+                                onClick={() => setParams(props.state)}
+                            >
+                                <IconRefresh className="size-4" />
+                            </Button>
                         </div>
                     </CardHeader>
                     <CardContent className="px-0 py-0 [&_td]:whitespace-nowrap [&_td]:px-6 [&_th]:px-6">
                         <Table className="w-full">
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>No</TableHead>
-                                    <TableHead>Nama</TableHead>
-                                    <TableHead>Slug</TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="inline-flex group"
+                                            onClick={() => onSortable("id")}
+                                        >
+                                            No{" "}
+                                            <span className="flex-none ml-2 rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4 text-muted-foreground" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="inline-flex group"
+                                            onClick={() => onSortable("name")}
+                                        >
+                                            Nama{" "}
+                                            <span className="flex-none ml-2 rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4 text-muted-foreground" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="inline-flex group"
+                                            onClick={() => onSortable("slug")}
+                                        >
+                                            Slug{" "}
+                                            <span className="flex-none ml-2 rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4 text-muted-foreground" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
                                     <TableHead>Cover</TableHead>
-                                    <TableHead>Dibuat Pada</TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="inline-flex group"
+                                            onClick={() =>
+                                                onSortable("created_at")
+                                            }
+                                        >
+                                            Dibuat Pada{" "}
+                                            <span className="flex-none ml-2 rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4 text-muted-foreground" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
                                     <TableHead>Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
