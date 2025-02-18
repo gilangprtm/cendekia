@@ -69,7 +69,8 @@ export default function SidebarResponsive({ url = "#", auth }) {
                     icon={IconCategory}
                 />
                 <NavLinkResponsive
-                    url="#"
+                    url={route("admin.publishers.index")}
+                    active={url.startsWith("/admin/publishers")}
                     title="Penerbit"
                     icon={IconBuildingCommunity}
                 />

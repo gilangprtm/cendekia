@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -21,5 +22,27 @@ class Publishers extends Model
     public function books()
     {
         return $this->hasMany(Books::class);
+    }
+
+    public function scopeFilter(Builder $query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereAny([
+                    'name',
+                    'slug',
+                    'email',
+                    'address',
+                    'phone'
+                ], 'REGEXP', $search);
+            });
+        });
+    }
+
+    public function scopeSorting(Builder $query, array $sorts)
+    {
+        $query->when($sorts['field'] ?? null &&  $sorts['direction'] ?? null, function ($query) use ($sorts) {
+            $query->orderBy($sorts['field'], $sorts['direction'] ?? 'asc');
+        });
     }
 }
