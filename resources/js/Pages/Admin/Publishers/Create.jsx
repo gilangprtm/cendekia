@@ -12,12 +12,14 @@ import { useRef } from "react";
 import { toast } from "sonner";
 
 export default function Create(props) {
-    const fileInputCover = useRef(null);
+    const fileInput = useRef(null);
 
     const { data, setData, reset, post, processing, errors } = useForm({
         name: "",
-        description: "",
-        cover: null,
+        address: "",
+        phone: "",
+        email: "",
+        logo: null,
         _method: props.page_settings.method,
     });
 
@@ -45,7 +47,7 @@ export default function Create(props) {
 
     const onHandleReset = (e) => {
         reset();
-        fileInputCover.current.value = null;
+        fileInput.current.value = null;
     };
 
     return (
@@ -59,7 +61,7 @@ export default function Create(props) {
                     />
 
                     <Button variant="orange" size="lg" asChild>
-                        <Link href={route("admin.categories.index")}>
+                        <Link href={route("admin.publishers.index")}>
                             <IconArrowLeft className="size-4" />
                             Kembali
                         </Link>
@@ -74,7 +76,7 @@ export default function Create(props) {
                                     id="name"
                                     type="text"
                                     name="name"
-                                    placeholder="Nama kategori"
+                                    placeholder="Nama penerbit"
                                     value={data.name}
                                     onChange={onHandleChange}
                                 />
@@ -85,32 +87,62 @@ export default function Create(props) {
                                 )}
                             </div>
                             <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="description">Deskripsi</Label>
+                                <Label htmlFor="address">Alamat</Label>
                                 <Textarea
-                                    id="description"
-                                    name="description"
-                                    placeholder="Deskripsi kategori"
-                                    value={data.description}
+                                    id="address"
+                                    name="address"
+                                    placeholder="Alamat penerbit"
+                                    value={data.address}
                                     onChange={onHandleChange}
                                 />
-                                {errors.description && (
+                                {errors.address && (
                                     <p className="text-xs text-red-600">
-                                        {errors.description}
+                                        {errors.address}
                                     </p>
                                 )}
                             </div>
                             <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="cover">Cover</Label>
-                                <Input
-                                    id="cover"
-                                    type="file"
-                                    name="cover"
+                                <Label htmlFor="phone">Phone</Label>
+                                <Textarea
+                                    id="phone"
+                                    name="phone"
+                                    placeholder="Telpon penerbit"
+                                    value={data.phone}
                                     onChange={onHandleChange}
-                                    ref={fileInputCover}
                                 />
-                                {errors.cover && (
+                                {errors.phone && (
                                     <p className="text-xs text-red-600">
-                                        {errors.cover}
+                                        {errors.phone}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="email">Email</Label>
+                                <Textarea
+                                    id="email"
+                                    name="email"
+                                    placeholder="E-mail penerbit"
+                                    value={data.email}
+                                    onChange={onHandleChange}
+                                />
+                                {errors.email && (
+                                    <p className="text-xs text-red-600">
+                                        {errors.email}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="logo">Logo</Label>
+                                <Input
+                                    id="logo"
+                                    type="file"
+                                    name="logo"
+                                    onChange={onHandleChange}
+                                    ref={fileInput}
+                                />
+                                {errors.logo && (
+                                    <p className="text-xs text-red-600">
+                                        {errors.logo}
                                     </p>
                                 )}
                             </div>

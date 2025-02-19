@@ -58,7 +58,6 @@ export default function Index(props) {
     const { data: datas, meta } = props.datas;
     const [params, setParams] = useState(props.state);
 
-    console.log(datas);
     UseFilter({
         route: route("admin.publishers.index"),
         values: params,
@@ -100,7 +99,7 @@ export default function Index(props) {
                     />
 
                     <Button variant="orange" size="lg" asChild>
-                        <Link href={route("admin.categories.create")}>
+                        <Link href={route("admin.publishers.create")}>
                             <IconPlus className="size-4" />
                             Tambah
                         </Link>

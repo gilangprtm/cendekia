@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Traits\HasFile;
+use App\Enums\MessageType;
 use App\Models\Publishers;
 use App\Http\Resources\Admin\PublisherResource;
+use App\Http\Requests\Admin\PublisherRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Response;
+use Throwable;
 
 class PublisherController extends Controller
 {
+    use HasFile;
+
     public function index(): Response
     {
         $datas = Publishers::query()
@@ -39,74 +45,77 @@ class PublisherController extends Controller
 
     public function create(): Response
     {
-        return inertia('Admin/Categories/Create', [
+        return inertia('Admin/Publishers/Create', [
             'page_settings' => [
-                'title' => 'Tambah Kategori',
-                'subtitle' => 'Menambahkan kategori baru',
+                'title' => 'Tambah Penerbit',
+                'subtitle' => 'Menambahkan penerbit baru',
                 'method' => 'POST',
-                'action' => route('admin.categories.store'),
+                'action' => route('admin.publishers.store'),
             ]
         ]);
     }
-/*
-    public function store(CategoryRequest $request)
+
+    public function store(PublisherRequest $request)
     {
         try {
-            Category::create([
+            Publishers::create([
                 'name' => $name = $request->name,
                 'slug' => str()->lower(str()->slug($name)) . str()->random(4),
-                'description' => $request->description,
-                'cover' => $this->upload_file($request, 'cover', 'categories'),
+                'address' => $request->address,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'logo' => $this->upload_file($request, 'logo', 'publishers'),
             ]);
-            flashMessage(MessageType::CREATED->message('Kategori'));
-            return to_route('admin.categories.index');
+            flashMessage(MessageType::CREATED->message('Penerbit'));
+            return to_route('admin.publishers.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return back();
         }
     }
 
-    public function edit(Category $category): Response
+    public function edit(Publishers $publisher): Response
     {
-        return inertia('Admin/Categories/Edit', [
-            'category' => $category,
+        return inertia('Admin/Publishers/Edit', [
+            'data' => $publisher,
             'page_settings' => [
-                'title' => 'Edit Kategori',
-                'subtitle' => 'Mengedit kategori yang telah tersedia di platform ini',
+                'title' => 'Edit Penerbit',
+                'subtitle' => 'Mengedit penerbit yang telah tersedia di platform ini',
                 'method' => 'PUT',
-                'action' => route('admin.categories.update', $category),
+                'action' => route('admin.publishers.update', $publisher),
             ]
         ]);
     }
 
-    public function update(CategoryRequest $request, Category $category)
+    public function update(PublisherRequest $request, Publishers $publisher)
     {
         try {
-            $category->update([
+            $publisher->update([
                 'name' => $name = $request->name,
-                'slug' => $name !== $category->name ? str()->lower(str()->slug($name)) . str()->random(4) : $category->slug,
-                'description' => $request->description,
-                'cover' => $this->upload_file($request, $category, 'cover', 'categories'),
+                'slug' => $name !== $publisher->name ? str()->lower(str()->slug($name)) . str()->random(4) : $publisher->slug,
+                'address' => $request->address,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'logo' => $this->upload_file($request, $publisher, 'logo', 'publishers'),
             ]);
-            flashMessage(MessageType::UPDATE->message('Kategori'));
-            return to_route('admin.categories.index');
+            flashMessage(MessageType::UPDATE->message('Penerbit'));
+            return to_route('admin.publishers.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return back();
         }
     }
-
-    public function destroy(Category $category)
+ 
+    public function destroy(Publishers $publisher)
     {
         try {
-            $this->delete_file($category, 'cover');
-            $category->delete();
-            flashMessage(MessageType::DELETED->message('Kategori'));
-            return to_route('admin.categories.index');
+            $this->delete_file($publisher, 'logo');
+            $publisher->delete();
+            flashMessage(MessageType::DELETED->message('Penerbit'));
+            return to_route('admin.publishers.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return back();
         }
-    }
-        */
+    }       
 }

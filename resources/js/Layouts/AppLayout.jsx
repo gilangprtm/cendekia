@@ -28,7 +28,6 @@ import { usePage } from "@inertiajs/react";
 
 export default function AppLayout({ title, children }) {
     const auth = usePage().props.auth;
-    console.log(auth);
     const { url } = usePage();
     return (
         <>
