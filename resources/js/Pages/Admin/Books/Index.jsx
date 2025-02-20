@@ -24,7 +24,6 @@ import {
     IconRefresh,
     IconTrash,
 } from "@tabler/icons-react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/Components/ui/avatar";
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -56,13 +55,13 @@ import {
 } from "@/Components/ui/select";
 
 export default function Index(props) {
-    const { data: categories, meta } = props.categories;
+    const { data: datas, meta } = props.datas;
     const [params, setParams] = useState(props.state);
 
     UseFilter({
-        route: route("admin.categories.index"),
+        route: route("admin.books.index"),
         values: params,
-        only: ["categories"],
+        only: ["datas"],
     });
 
     const onSortable = (field) => {
@@ -73,8 +72,8 @@ export default function Index(props) {
         });
     };
 
-    const onHandleDelete = (category) => {
-        router.delete(route("admin.categories.destroy", [category]), {
+    const onHandleDelete = (data) => {
+        router.delete(route("admin.books.destroy", [data]), {
             preserveScroll: true,
             preserveState: true,
             onSuccess: (success) => {
@@ -100,7 +99,7 @@ export default function Index(props) {
                     />
 
                     <Button variant="orange" size="lg" asChild>
-                        <Link href={route("admin.categories.create")}>
+                        <Link href={route("admin.books.create")}>
                             <IconPlus className="size-4" />
                             Tambah
                         </Link>
@@ -172,9 +171,11 @@ export default function Index(props) {
                                         <Button
                                             variant="ghost"
                                             className="inline-flex group"
-                                            onClick={() => onSortable("name")}
+                                            onClick={() =>
+                                                onSortable("book_code")
+                                            }
                                         >
-                                            Nama{" "}
+                                            Kode Buku{" "}
                                             <span className="flex-none ml-2 rounded text-muted-foreground">
                                                 <IconArrowsDownUp className="size-4 text-muted-foreground" />
                                             </span>
@@ -184,24 +185,48 @@ export default function Index(props) {
                                         <Button
                                             variant="ghost"
                                             className="inline-flex group"
-                                            onClick={() => onSortable("slug")}
+                                            onClick={() => onSortable("title")}
                                         >
-                                            Slug{" "}
+                                            Judul{" "}
                                             <span className="flex-none ml-2 rounded text-muted-foreground">
                                                 <IconArrowsDownUp className="size-4 text-muted-foreground" />
                                             </span>
                                         </Button>
                                     </TableHead>
-                                    <TableHead>Cover</TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="inline-flex group"
+                                            onClick={() => onSortable("author")}
+                                        >
+                                            Penulis{" "}
+                                            <span className="flex-none ml-2 rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4 text-muted-foreground" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
+                                    <TableHead>Stok</TableHead>
                                     <TableHead>
                                         <Button
                                             variant="ghost"
                                             className="inline-flex group"
                                             onClick={() =>
-                                                onSortable("created_at")
+                                                onSortable("publication_year")
                                             }
                                         >
-                                            Dibuat Pada{" "}
+                                            Tahun Publikasi{" "}
+                                            <span className="flex-none ml-2 rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4 text-muted-foreground" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="inline-flex group"
+                                            onClick={() => onSortable("price")}
+                                        >
+                                            Harga{" "}
                                             <span className="flex-none ml-2 rounded text-muted-foreground">
                                                 <IconArrowsDownUp className="size-4 text-muted-foreground" />
                                             </span>
@@ -212,32 +237,24 @@ export default function Index(props) {
                             </TableHeader>
 
                             <TableBody>
-                                {categories.map((category, index) => (
-                                    <TableRow key={category.id}>
+                                {datas.map((data, index) => (
+                                    <TableRow key={data.id}>
                                         <TableCell>
                                             {index +
                                                 1 +
                                                 (meta.current_page - 1) *
                                                     meta.per_page}
                                         </TableCell>
-                                        <TableCell>{category.name}</TableCell>
-                                        <TableCell>{category.slug}</TableCell>
+                                        <TableCell>{data.book_code}</TableCell>
+                                        <TableCell>{data.title}</TableCell>
+                                        <TableCell>{data.author}</TableCell>
                                         <TableCell>
-                                            <Avatar>
-                                                <AvatarImage
-                                                    src={category.cover}
-                                                />
-                                                <AvatarFallback>
-                                                    {category.name.substring(
-                                                        0,
-                                                        1
-                                                    )}
-                                                </AvatarFallback>
-                                            </Avatar>
+                                            {data.stock.total}
                                         </TableCell>
                                         <TableCell>
-                                            {category.created_at}
+                                            {data.publication_year}
                                         </TableCell>
+                                        <TableCell>Rp. {data.price}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
                                                 <Button
@@ -247,8 +264,8 @@ export default function Index(props) {
                                                 >
                                                     <Link
                                                         href={route(
-                                                            "admin.categories.edit",
-                                                            [category]
+                                                            "admin.books.edit",
+                                                            [data]
                                                         )}
                                                     >
                                                         <IconPencil className="size-4" />
@@ -271,8 +288,8 @@ export default function Index(props) {
                                                             <AlertDialogDescription>
                                                                 Apakah kamu
                                                                 yakin ingin
-                                                                menghapus
-                                                                kategori ini?
+                                                                menghapus data
+                                                                ini?
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
@@ -282,7 +299,7 @@ export default function Index(props) {
                                                             <AlertDialogAction
                                                                 onClick={() =>
                                                                     onHandleDelete(
-                                                                        category
+                                                                        data
                                                                     )
                                                                 }
                                                             >
@@ -304,7 +321,7 @@ export default function Index(props) {
                             <span className="font-medium text-orange-500">
                                 {meta.from ?? 0}
                             </span>{" "}
-                            dari {meta.total} kategori
+                            dari {meta.total} buku
                         </p>
                         <div className="overflow-x-auto">
                             {meta.has_pages && (
@@ -313,7 +330,7 @@ export default function Index(props) {
                                         {meta.links.map((link, index) => (
                                             <PaginationItem
                                                 key={index}
-                                                className="mx-1 mb-1 lb:mb-0"
+                                                className="mx-0 mb-1 lb:mb-0"
                                             >
                                                 <PaginationLink
                                                     href={link.url}

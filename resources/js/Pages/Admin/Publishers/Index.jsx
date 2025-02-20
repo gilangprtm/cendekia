@@ -124,7 +124,7 @@ export default function Index(props) {
                             <Select
                                 value={params?.load}
                                 onValueChange={(e) =>
-                                    setParams({ ...params, load: e })
+                                    setParams({ ...params, load: e, page: 1 })
                                 }
                             >
                                 <SelectTrigger className="w-full sm:w-24">
@@ -309,7 +309,7 @@ export default function Index(props) {
                                         {meta.links.map((link, index) => (
                                             <PaginationItem
                                                 key={index}
-                                                className="mx-1 mb-1 lb:mb-0"
+                                                className="mx-0 mb-1 lb:mb-0"
                                             >
                                                 <PaginationLink
                                                     href={link.url}

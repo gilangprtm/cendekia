@@ -11,14 +11,14 @@ import { IconArrowLeft, IconCategory } from "@tabler/icons-react";
 import { useRef } from "react";
 import { toast } from "sonner";
 
-export default function Create(props) {
+export default function Edit(props) {
     const fileInput = useRef(null);
 
     const { data, setData, reset, post, processing, errors } = useForm({
-        name: "",
-        address: "",
-        phone: "",
-        email: "",
+        name: props.data.name ?? "",
+        address: props.data.address ?? "",
+        phone: props.data.phone ?? "",
+        email: props.data.email ?? "",
         logo: null,
         _method: props.page_settings.method,
     });
@@ -76,7 +76,7 @@ export default function Create(props) {
                                     id="name"
                                     type="text"
                                     name="name"
-                                    placeholder="Nama penerbit"
+                                    placeholder="Nama kategori"
                                     value={data.name}
                                     onChange={onHandleChange}
                                 />
@@ -103,7 +103,7 @@ export default function Create(props) {
                             </div>
                             <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="phone">Phone</Label>
-                                <Input
+                                <Textarea
                                     id="phone"
                                     name="phone"
                                     placeholder="Telpon penerbit"
@@ -118,7 +118,7 @@ export default function Create(props) {
                             </div>
                             <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="email">Email</Label>
-                                <Input
+                                <Textarea
                                     id="email"
                                     name="email"
                                     placeholder="E-mail penerbit"
@@ -172,6 +172,6 @@ export default function Create(props) {
     );
 }
 
-Create.layout = (page) => (
+Edit.layout = (page) => (
     <AppLayout children={page} title={page.props.page_settings.title} />
 );
