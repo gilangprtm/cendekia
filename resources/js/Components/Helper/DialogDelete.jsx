@@ -1,6 +1,5 @@
 import {
     AlertDialog,
-    AlertDialogTrigger,
     AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
@@ -9,17 +8,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/Components/ui/alert-dialog";
-import { Button } from "@/Components/ui/button";
-import { IconTrash } from "@tabler/icons-react";
 
-export default function DialogDelete({ onConfirm }) {
+export default function DialogDelete({ onConfirm, isOpen, onClose }) {
+    if (!isOpen) return null;
+
     return (
-        <AlertDialog>
-            <AlertDialogTrigger asChild>
-                <Button variant="red" size="sm">
-                    <IconTrash className="size-4" />
-                </Button>
-            </AlertDialogTrigger>
+        <AlertDialog open={isOpen} onOpenChange={onClose}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Hapus</AlertDialogTitle>
@@ -28,10 +22,8 @@ export default function DialogDelete({ onConfirm }) {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                    <AlertDialogAction onClick={onConfirm}>
-                        Hapus
-                    </AlertDialogAction>
+                    <AlertDialogCancel onClick={onClose}>Batal</AlertDialogCancel>
+                    <AlertDialogAction onClick={onConfirm}>Hapus</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

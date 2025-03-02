@@ -7,7 +7,7 @@ import {
     TableCell,
 } from "@/Components/ui/table";
 import { Button } from "@/Components/ui/button";
-import { IconArrowsDownUp } from "@tabler/icons-react";
+import { IconArrowsDownUp, IconMenu2 } from "@tabler/icons-react";
 import DialogDelete from "@/Components/Helper/DialogDelete";
 import { Link, router } from "@inertiajs/react";
 import {
@@ -16,11 +16,10 @@ import {
     PaginationItem,
     PaginationLink,
 } from "@/Components/ui/pagination";
-import { useState } from "react";
 import { UseFilter } from "@/hooks/use-filter";
 import { flashMessage } from "@/lib/utils";
 import { toast } from "sonner";
-import { Input } from "@/Components/ui/input";
+import { useState, useEffect } from "react";
 import {
     Select,
     SelectContent,
@@ -28,157 +27,86 @@ import {
     SelectTrigger,
     SelectItem,
 } from "@/Components/ui/select";
-import { IconRefresh } from "@tabler/icons-react";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/Components/ui/dropdown-menu";
 
 export default function TabelDatas({
-    initialState,
     state,
     datas,
     meta,
-    routeName,
     columns,
     actions,
-    filters,
+    datasFrom,
+    datasDelete,
 }) {
     const [params, setParams] = useState({
         ...state,
-        load: parseInt(state.load, 10),
-        page: parseInt(state.page, 10),
     });
 
-    const initState = {
-        ...initialState,
-        load: parseInt(initialState.load, 10),
-        page: parseInt(initialState.page, 10),
-    };
+    const [deleteItem, setDeleteItem] = useState(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     UseFilter({
-        route: route(routeName + ".index"),
+        route: route(datasFrom),
         values: params,
         only: ["datas"],
     });
 
+    useEffect(() => {
+        setParams(state);
+    }, [state]);
+
     const onSortable = (field) => {
-        setParams({
-            ...params,
+        const newDirection = params.direction === "asc" ? "desc" : "asc";
+        setParams((prev) => ({
+            ...prev,
             field: field,
-            direction: params.direction === "asc" ? "desc" : "asc",
-        });
+            direction: newDirection,
+        }));
     };
 
     const onHandleDelete = (item) => {
-        router.delete(route(`${routeName}.destroy`, [item]), {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: (success) => {
-                const flash = flashMessage(success);
-                if (flash) {
-                    toast[flash.type](flash.message);
-                }
-            },
-            onError: (error) => {
-                console.error("onError called with error:", error);
-            },
-        });
+        setDeleteItem(item);
+        setIsDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (deleteItem) {
+            router.delete(route(datasDelete, [deleteItem]), {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: (success) => {
+                    const flash = flashMessage(success);
+                    if (flash) {
+                        toast[flash.type](flash.message);
+                    }
+                },
+                onError: (error) => {
+                    console.error("onError called with error:", error);
+                },
+            });
+            setDeleteItem(null);
+            setIsDialogOpen(false);
+        }
+    };
+
+    const closeDialog = () => {
+        setIsDialogOpen(false);
     };
 
     return (
         <>
-            <div className="flex w-full px-6 py-6 flex-col gap-4 lg:flex-row lg:items-center">
-                <Select
-                    value={params?.load}
-                    onValueChange={(e) =>
-                        setParams({ ...params, load: e, page: 1 })
-                    }
-                >
-                    <SelectTrigger className="w-full sm:w-24">
-                        <SelectValue placeholder="Load" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {[10, 25, 50, 75, 100].map((number, index) => (
-                            <SelectItem key={index} value={number}>
-                                {number}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-                {filters.map((filter) => {
-                    if (filter.type === "input") {
-                        return (
-                            <Input
-                                key={filter.name}
-                                className="w-full sm:w-1/4"
-                                placeholder={filter.placeholder}
-                                value={params[filter.name]}
-                                onChange={(e) =>
-                                    setParams((prev) => ({
-                                        ...prev,
-                                        [filter.name]: e.target.value,
-                                        page: 1,
-                                    }))
-                                }
-                            />
-                        );
-                    } else if (filter.type === "date") {
-                        return (
-                            <Input
-                                key={filter.name}
-                                type="date"
-                                className="w-full sm:w-1/4"
-                                value={params[filter.name]}
-                                onChange={(e) =>
-                                    setParams((prev) => ({
-                                        ...prev,
-                                        [filter.name]: e.target.value,
-                                        page: 1,
-                                    }))
-                                }
-                            />
-                        );
-                    } else if (filter.type === "select") {
-                        return (
-                            <Select
-                                key={filter.name}
-                                value={params[filter.name]}
-                                onValueChange={(e) =>
-                                    setParams((prev) => ({
-                                        ...prev,
-                                        [filter.name]: e,
-                                        page: 1,
-                                    }))
-                                }
-                            >
-                                <SelectTrigger className="w-full sm:w-24">
-                                    <SelectValue
-                                        placeholder={filter.placeholder}
-                                    />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {filter.options.map((option, index) => (
-                                        <SelectItem
-                                            key={index}
-                                            value={option.value}
-                                        >
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        );
-                    }
-                    return null;
-                })}
-                <Button variant="red" onClick={() => setParams(initState)}>
-                    <IconRefresh className="size-4" />
-                </Button>
-            </div>
             <Table className="w-full">
                 <TableHeader>
                     <TableRow>
                         <TableHead>
                             <Button
                                 variant="ghost"
-                                className="inline-flex group"
+                                className="inline-flex group px-0"
                                 onClick={() => onSortable("id")}
                             >
                                 No{" "}
@@ -191,7 +119,7 @@ export default function TabelDatas({
                             <TableHead key={column.field}>
                                 <Button
                                     variant="ghost"
-                                    className="inline-flex group"
+                                    className="inline-flex group px-0"
                                     onClick={() => onSortable(column.field)}
                                 >
                                     {column.label}{" "}
@@ -219,36 +147,72 @@ export default function TabelDatas({
                                 </TableCell>
                             ))}
                             <TableCell>
-                                <div className="flex items-center gap-x-1">
-                                    {actions.map((action) => (
-                                        <Button
-                                            key={action.field}
-                                            variant="blue"
-                                            size="sm"
-                                            asChild
-                                        >
-                                            <Link href={action.action(item)}>
-                                                {action.icon}
-                                            </Link>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="sm">
+                                            <IconMenu2 className="size-4" />
                                         </Button>
-                                    ))}
-                                    <DialogDelete
-                                        onConfirm={() => onHandleDelete(item)}
-                                    />
-                                </div>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent side="left">
+                                        {actions.map((action) => (
+                                            <DropdownMenuItem
+                                                key={action.field}
+                                                asChild
+                                            >
+                                                <Link
+                                                    href={action.action(item)}
+                                                >
+                                                    {action.label}
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        ))}
+                                        <DropdownMenuItem
+                                            onSelect={() =>
+                                                onHandleDelete(item)
+                                            }
+                                        >
+                                            Hapus
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
+            <DialogDelete
+                isOpen={isDialogOpen}
+                onConfirm={confirmDelete}
+                onClose={closeDialog}
+            />
             <div className="flex flex-col px-6 items-center justify-between w-full py-2 border-t lg:flex-row">
-                <p className="mb-2 text-sm text-muted-foreground">
-                    Menampilkan{" "}
-                    <span className="font-medium text-orange-500">
-                        {meta.to ?? 0}
-                    </span>{" "}
-                    dari {meta.total} data
-                </p>
+                <div className="flex flex-col gap-4 items-center lg:flex-row">
+                    <p className="mb-2 text-sm text-muted-foreground">
+                        Menampilkan{" "}
+                        <span className="font-medium text-orange-500">
+                            {meta.to ?? 0}
+                        </span>{" "}
+                        dari {meta.total} data
+                    </p>
+                    <Select
+                        value={params.load}
+                        onValueChange={(e) =>
+                            setParams({ ...params, load: e, page: 1 })
+                        }
+                    >
+                        <SelectTrigger className="w-full sm:w-24">
+                            <SelectValue placeholder="Load" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {[10, 25, 50, 75, 100].map((number, index) => (
+                                <SelectItem key={index} value={number}>
+                                    {number}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
                 <div className="overflow-x-auto">
                     {meta.has_pages && (
                         <Pagination>
