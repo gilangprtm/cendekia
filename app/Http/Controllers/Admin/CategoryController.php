@@ -23,7 +23,7 @@ class CategoryController extends Controller
             ->filter(request()->only(['search']))
             ->sorting(request()->only(['field', 'direction']))
             ->paginate(request()->load ?? 10)
-            ->withQueryString();
+            ->appends(request()->query());
 
         return inertia('Admin/Categories/Index', [
             'categories' => CategoryResource::collection($categories)->additional([

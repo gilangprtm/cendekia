@@ -23,7 +23,7 @@ class BookController extends Controller
             ->with(['categories', 'publishers', 'stocks'])
             ->latest('created_at')
             ->paginate(request()->load ?? 10)
-            ->withQueryString();
+            ->appends(request()->query());
 
         return inertia('Admin/Books/Index', [
             'datas' => BookResource::collection($datas)->additional([

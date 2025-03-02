@@ -28,14 +28,28 @@ class Publishers extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->whereAny([
-                    'name',
-                    'slug',
-                    'email',
-                    'address',
-                    'phone'
-                ], 'REGEXP', $search);
+                $query->orWhere('name', 'REGEXP', $search)
+                    ->orWhere('slug', 'REGEXP', $search)
+                    ->orWhere('email', 'REGEXP', $search)
+                    ->orWhere('address', 'REGEXP', $search)
+                    ->orWhere('phone', 'REGEXP', $search);
             });
+        });
+
+        $query->when($filters['name'] ?? null, function ($query, $name) {
+            $query->where(function ($query) use ($name) {
+                $query->orWhere('name', 'REGEXP', $name);
+            });
+        });
+
+        $query->when($filters['slug'] ?? null, function ($query, $slug) {
+            $query->where(function ($query) use ($slug) {
+                $query->orWhere('slug', 'REGEXP', $slug);
+            });
+        });
+
+        $query->when($filters['created_at'] ?? null, function ($query, $created_at) {
+            $query->whereDate('created_at', $created_at);
         });
     }
 
