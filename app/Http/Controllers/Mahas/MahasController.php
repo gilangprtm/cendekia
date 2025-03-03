@@ -57,12 +57,27 @@ abstract class MahasController extends Controller
         ]);
     }
 
+    public function view($id): Response
+    {
+        $data = $this->model::findOrFail($id);
+        return inertia($this->pagePrefix . '/Form', [
+            'data' => $data,
+            'page_settings' => array_merge($this->pageSettings, [
+                'method' => 'GET',
+                'action' => route($this->routePrefix . '.edit', $data),
+                'mode' => 'view',
+            ])
+        ]);
+    }
+
     public function create(): Response
     {
-        return inertia($this->pagePrefix . '/Create', [
+        return inertia($this->pagePrefix . '/Form', [
+            'data' => null,
             'page_settings' => array_merge($this->pageSettings, [
                 'method' => 'POST',
                 'action' => route($this->routePrefix . '.store'),
+                'mode' => 'create',
             ])
         ]);
     }
@@ -82,11 +97,12 @@ abstract class MahasController extends Controller
     public function edit($id): Response
     {
         $data = $this->model::findOrFail($id);
-        return inertia($this->pagePrefix . '/Edit', [
+        return inertia($this->pagePrefix . '/Form', [
             'data' => $data,
             'page_settings' => array_merge($this->pageSettings, [
                 'method' => 'PUT',
                 'action' => route($this->routePrefix . '.update', $data),
+                'mode' => 'edit',
             ])
         ]);
     }

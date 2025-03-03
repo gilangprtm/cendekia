@@ -9,6 +9,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     //categori
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories', 'index')->name('admin.categories.index');
+        Route::get('/categories/view/{category}', 'view')->name('admin.categories.view');
         Route::get('/categories/create', 'create')->name('admin.categories.create');
         Route::post('/categories/create', 'store')->name('admin.categories.store');
         Route::get('/categories/edit/{category}', 'edit')->name('admin.categories.edit');
@@ -19,6 +20,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     //publisher
     Route::controller(PublisherController::class)->group(function () {
         Route::get('/publishers', 'index')->name('admin.publishers.index');
+        Route::get('/publishers/view/{publisher}', 'view')->name('admin.publishers.view');
         Route::get('/publishers/create', 'create')->name('admin.publishers.create');
         Route::post('/publishers/create', 'store')->name('admin.publishers.store');
         Route::get('/publishers/edit/{publisher}', 'edit')->name('admin.publishers.edit');
@@ -29,6 +31,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     //book
     Route::controller(BookController::class)->group(function () {
         Route::get('/books', 'index')->name('admin.books.index');
+        Route::get('/books/view/{book}', 'view')->name('admin.books.view');
         Route::get('/books/create', 'create')->name('admin.books.create');
         Route::post('/books/create', 'store')->name('admin.books.store');
         Route::get('/books/edit/{book}', 'edit')->name('admin.books.edit');

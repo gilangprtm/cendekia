@@ -11,17 +11,19 @@ import { IconArrowLeft, IconCategory } from "@tabler/icons-react";
 import { useRef } from "react";
 import { toast } from "sonner";
 
-export default function Edit(props) {
+export default function Form(props) {
     const fileInput = useRef(null);
 
     const { data, setData, reset, post, processing, errors } = useForm({
-        name: props.data.name ?? "",
-        address: props.data.address ?? "",
-        phone: props.data.phone ?? "",
-        email: props.data.email ?? "",
+        name: props.data?.name || "",
+        address: props.data?.address || "",
+        phone: props.data?.phone || "",
+        email: props.data?.email || "",
         logo: null,
         _method: props.page_settings.method,
     });
+
+    const { mode } = props.page_settings;
 
     const onHandleChange = (event) => {
         setData(
@@ -38,8 +40,8 @@ export default function Edit(props) {
         post(props.page_settings.action, {
             preserveScroll: true,
             preserveState: true,
-            onSuccess: (sucess) => {
-                const flash = flashMessage(sucess);
+            onSuccess: (success) => {
+                const flash = flashMessage(success);
                 if (flash) toast[flash.type](flash.message);
             },
         });
@@ -49,6 +51,8 @@ export default function Edit(props) {
         reset();
         fileInput.current.value = null;
     };
+
+    const isViewMode = mode === "view";
 
     return (
         <>
@@ -76,9 +80,10 @@ export default function Edit(props) {
                                     id="name"
                                     type="text"
                                     name="name"
-                                    placeholder="Nama kategori"
+                                    placeholder="Nama penerbit"
                                     value={data.name}
                                     onChange={onHandleChange}
+                                    disabled={isViewMode}
                                 />
                                 {errors.name && (
                                     <p className="text-xs text-red-600">
@@ -94,6 +99,7 @@ export default function Edit(props) {
                                     placeholder="Alamat penerbit"
                                     value={data.address}
                                     onChange={onHandleChange}
+                                    disabled={isViewMode}
                                 />
                                 {errors.address && (
                                     <p className="text-xs text-red-600">
@@ -103,12 +109,13 @@ export default function Edit(props) {
                             </div>
                             <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="phone">Phone</Label>
-                                <Textarea
+                                <Input
                                     id="phone"
                                     name="phone"
                                     placeholder="Telpon penerbit"
                                     value={data.phone}
                                     onChange={onHandleChange}
+                                    disabled={isViewMode}
                                 />
                                 {errors.phone && (
                                     <p className="text-xs text-red-600">
@@ -118,12 +125,13 @@ export default function Edit(props) {
                             </div>
                             <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="email">Email</Label>
-                                <Textarea
+                                <Input
                                     id="email"
                                     name="email"
                                     placeholder="E-mail penerbit"
                                     value={data.email}
                                     onChange={onHandleChange}
+                                    disabled={isViewMode}
                                 />
                                 {errors.email && (
                                     <p className="text-xs text-red-600">
@@ -139,6 +147,7 @@ export default function Edit(props) {
                                     name="logo"
                                     onChange={onHandleChange}
                                     ref={fileInput}
+                                    disabled={isViewMode}
                                 />
                                 {errors.logo && (
                                     <p className="text-xs text-red-600">
@@ -146,24 +155,35 @@ export default function Edit(props) {
                                     </p>
                                 )}
                             </div>
-                            <div className="flex justify-end gap-x-2">
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="lg"
-                                    onClick={onHandleReset}
-                                >
-                                    Reset
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="orange"
-                                    size="lg"
-                                    disabled={processing}
-                                >
-                                    Save
-                                </Button>
-                            </div>
+                            {!isViewMode && (
+                                <div className="flex justify-end gap-x-2">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="lg"
+                                        onClick={onHandleReset}
+                                    >
+                                        Reset
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="orange"
+                                        size="lg"
+                                        disabled={processing}
+                                    >
+                                        Save
+                                    </Button>
+                                </div>
+                            )}
+                            {isViewMode && (
+                                <div className="flex justify-end gap-x-2">
+                                    <Button variant="orange" size="lg" asChild>
+                                        <Link href={props.page_settings.action}>
+                                            Edit
+                                        </Link>
+                                    </Button>
+                                </div>
+                            )}
                         </form>
                     </CardContent>
                 </Card>
@@ -172,6 +192,6 @@ export default function Edit(props) {
     );
 }
 
-Edit.layout = (page) => (
+Form.layout = (page) => (
     <AppLayout children={page} title={page.props.page_settings.title} />
 );

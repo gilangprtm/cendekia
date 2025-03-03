@@ -25,6 +25,11 @@ export default function Index(props) {
 
     const action = [
         {
+            field: "view",
+            label: "View",
+            action: (item) => route("admin.publishers.view", [item]),
+        },
+        {
             field: "edit",
             label: "Edit",
             action: (item) => route("admin.publishers.edit", [item]),
